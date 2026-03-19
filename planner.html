@@ -20,8 +20,10 @@
       --paper-line-light: #eeebe4;
       --ink: #1a1a1a;
       --ink-light: #555;
+      --ink-muted: #999;
       --accent: #2d6a4f;
       --accent-light: #d8f3dc;
+      --accent-hover: #245a42;
       --gold: #b8960c;
       --gold-light: #fdf6e3;
       --red: #c0392b;
@@ -32,6 +34,17 @@
       --font-ink: 'Caveat', cursive;
       --mono: 'IBM Plex Mono', monospace;
       --radius: 8px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+      --shadow-lg: 0 12px 40px rgba(0,0,0,0.12);
+      --sticky-yellow: #fff9c4;
+      --sticky-pink: #fce4ec;
+      --sticky-blue: #e3f2fd;
+      --sticky-green: #e8f5e9;
+      --sticky-yellow-border: #f9a825;
+      --sticky-pink-border: #e91e63;
+      --sticky-blue-border: #1976d2;
+      --sticky-green-border: #388e3c;
     }
 
     html, body { height: 100%; overflow: hidden; }
@@ -45,8 +58,14 @@
       -webkit-font-smoothing: antialiased;
     }
 
+    /* Scrollbar styling */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--paper-line); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--ink-muted); }
+
     /* ============================================
-       Sidebar — Clients + Pricing
+       Sidebar — Clients + Pricing + Notes
        ============================================ */
     .sidebar {
       width: var(--sidebar-w);
@@ -61,6 +80,7 @@
     .sidebar-header {
       padding: 20px;
       border-bottom: 1px solid #e0ddd6;
+      background: linear-gradient(135deg, #fff 0%, var(--bg) 100%);
     }
 
     .sidebar-header h1 {
@@ -94,6 +114,7 @@
       border-bottom: 2px solid transparent;
       transition: all 0.2s;
     }
+    .sidebar-tab:hover { color: var(--ink); }
     .sidebar-tab.active {
       color: var(--accent);
       border-bottom-color: var(--accent);
@@ -115,7 +136,7 @@
       padding: 10px 12px;
       border-radius: var(--radius);
       cursor: pointer;
-      transition: background 0.15s;
+      transition: all 0.15s;
       margin-bottom: 2px;
     }
     .client-item:hover { background: var(--bg); }
@@ -166,6 +187,7 @@
     .add-client-btn:hover {
       border-color: var(--accent);
       color: var(--accent);
+      background: var(--accent-light);
     }
 
     /* Pricing tab */
@@ -174,7 +196,9 @@
       border-radius: var(--radius);
       padding: 16px;
       margin-bottom: 10px;
+      transition: transform 0.15s;
     }
+    .pricing-tier:hover { transform: translateY(-1px); }
     .pricing-tier h4 {
       font-family: var(--font-display);
       font-size: 0.9rem;
@@ -226,7 +250,7 @@
       background: var(--paper);
       resize: vertical;
     }
-    .notes-area:focus { outline: none; border-color: var(--accent); }
+    .notes-area:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(45,106,79,0.1); }
 
     .field-label {
       font-size: 0.7rem;
@@ -246,12 +270,11 @@
       font-family: var(--font);
       font-size: 0.85rem;
       background: var(--paper);
+      transition: border-color 0.15s, box-shadow 0.15s;
     }
-    .field-input:focus { outline: none; border-color: var(--accent); }
+    .field-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(45,106,79,0.1); }
 
-    select.field-input {
-      appearance: auto;
-    }
+    select.field-input { appearance: auto; }
 
     /* ============================================
        Main — Planner spread
@@ -272,6 +295,8 @@
       background: #fff;
       border-bottom: 1px solid #e0ddd6;
       flex-shrink: 0;
+      box-shadow: var(--shadow-sm);
+      z-index: 5;
     }
 
     .toolbar-nav {
@@ -292,7 +317,7 @@
       color: var(--ink);
       transition: all 0.15s;
     }
-    .toolbar-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .toolbar-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
 
     .toolbar-week {
       font-family: var(--font-display);
@@ -305,20 +330,26 @@
       color: #fff;
       border-color: var(--accent);
     }
-    .toolbar-today:hover { background: var(--accent); color: #fff; opacity: 0.9; }
+    .toolbar-today:hover { background: var(--accent-hover); color: #fff; border-color: var(--accent-hover); }
 
     /* Planner grid */
     .planner-scroll {
       flex: 1;
       overflow: auto;
       padding: 24px;
+      position: relative;
+    }
+
+    .planner-wrap {
+      position: relative;
+      min-width: 700px;
     }
 
     .planner {
       background: var(--paper);
       border: 1px solid var(--paper-line);
-      border-radius: var(--radius);
-      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+      border-radius: 12px;
+      box-shadow: var(--shadow-md);
       min-width: 700px;
       display: grid;
       grid-template-columns: 56px repeat(7, 1fr);
@@ -337,7 +368,8 @@
       position: sticky;
       top: 0;
       background: var(--paper);
-      z-index: 2;
+      z-index: 4;
+      transition: background 0.2s;
     }
     .planner-day-header.today {
       color: var(--accent);
@@ -358,7 +390,7 @@
       position: sticky;
       top: 0;
       background: var(--paper);
-      z-index: 2;
+      z-index: 4;
     }
 
     /* Time column */
@@ -366,7 +398,7 @@
       padding: 2px 8px 0;
       font-family: var(--mono);
       font-size: 0.65rem;
-      color: var(--ink-light);
+      color: var(--ink-muted);
       text-align: right;
       border-right: 1px solid var(--paper-line);
       border-bottom: 1px solid var(--paper-line-light);
@@ -387,11 +419,7 @@
     }
     .planner-slot:hover { background: rgba(45, 106, 79, 0.03); }
     .planner-slot:last-child { border-right: none; }
-
-    /* Hour marks */
-    .planner-slot.hour-mark {
-      border-bottom-color: var(--paper-line);
-    }
+    .planner-slot.hour-mark { border-bottom-color: var(--paper-line); }
 
     /* Entries on the planner */
     .planner-entry {
@@ -400,7 +428,7 @@
       right: 2px;
       background: var(--accent-light);
       border-left: 3px solid var(--accent);
-      border-radius: 0 4px 4px 0;
+      border-radius: 0 6px 6px 0;
       padding: 3px 6px;
       font-family: var(--font-ink);
       font-size: 0.95rem;
@@ -409,7 +437,9 @@
       cursor: pointer;
       z-index: 1;
       line-height: 1.3;
+      transition: transform 0.1s, box-shadow 0.1s;
     }
+    .planner-entry:hover { transform: scale(1.02); box-shadow: var(--shadow-sm); }
 
     .planner-entry.tier-sprint {
       background: var(--gold-light);
@@ -468,12 +498,259 @@
     .planner-sidebar-block textarea:focus { outline: none; }
 
     /* ============================================
+       Sticky Notes
+       ============================================ */
+    .sticky-note {
+      position: absolute;
+      min-width: 120px;
+      min-height: 100px;
+      padding: 8px 24px 24px 10px;
+      font-family: var(--font-ink);
+      font-size: 1rem;
+      line-height: 1.5;
+      color: var(--ink);
+      border-radius: 2px 2px 12px 2px;
+      cursor: grab;
+      z-index: 10;
+      box-shadow: 2px 3px 10px rgba(0,0,0,0.12), 0 1px 3px rgba(0,0,0,0.08);
+      user-select: none;
+      touch-action: none;
+      transition: box-shadow 0.2s;
+    }
+    .sticky-note:hover { box-shadow: 3px 5px 16px rgba(0,0,0,0.18), 0 2px 6px rgba(0,0,0,0.1); }
+    .sticky-note.dragging {
+      cursor: grabbing;
+      box-shadow: 6px 10px 30px rgba(0,0,0,0.22);
+      z-index: 100;
+      opacity: 0.92;
+    }
+
+    .sticky-note.color-yellow { background: var(--sticky-yellow); border-top: 3px solid var(--sticky-yellow-border); }
+    .sticky-note.color-pink { background: var(--sticky-pink); border-top: 3px solid var(--sticky-pink-border); }
+    .sticky-note.color-blue { background: var(--sticky-blue); border-top: 3px solid var(--sticky-blue-border); }
+    .sticky-note.color-green { background: var(--sticky-green); border-top: 3px solid var(--sticky-green-border); }
+
+    /* Fold effect */
+    .sticky-note::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 20px;
+      height: 20px;
+      background: linear-gradient(135deg, transparent 50%, rgba(0,0,0,0.04) 50%);
+      border-radius: 0 0 12px 0;
+    }
+
+    .sticky-note .sticky-close {
+      position: absolute;
+      top: 2px;
+      right: 4px;
+      width: 20px;
+      height: 20px;
+      border: none;
+      background: none;
+      color: rgba(0,0,0,0.3);
+      font-size: 14px;
+      cursor: pointer;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.15s, background 0.15s, color 0.15s;
+      line-height: 1;
+      padding: 0;
+      z-index: 2;
+    }
+    .sticky-note:hover .sticky-close { opacity: 1; }
+    .sticky-note .sticky-close:hover { background: rgba(0,0,0,0.1); color: rgba(0,0,0,0.6); }
+
+    .sticky-note .sticky-body {
+      width: 100%;
+      height: calc(100% - 4px);
+      border: none;
+      background: transparent;
+      font-family: var(--font-ink);
+      font-size: 1rem;
+      line-height: 1.5;
+      color: var(--ink);
+      resize: none;
+      outline: none;
+      cursor: text;
+      overflow: hidden;
+    }
+
+    /* Resize handle */
+    .sticky-note .sticky-resize {
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      width: 14px;
+      height: 14px;
+      cursor: nwse-resize;
+      opacity: 0;
+      transition: opacity 0.15s;
+      z-index: 2;
+    }
+    .sticky-note:hover .sticky-resize { opacity: 0.5; }
+    .sticky-note .sticky-resize::before {
+      content: '';
+      position: absolute;
+      bottom: 3px;
+      right: 3px;
+      width: 8px;
+      height: 8px;
+      border-right: 2px solid rgba(0,0,0,0.2);
+      border-bottom: 2px solid rgba(0,0,0,0.2);
+    }
+
+    /* Task sticky specifics */
+    .sticky-note.sticky-task .sticky-body {
+      display: none;
+    }
+
+    .sticky-task-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .sticky-task-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      padding: 2px 0;
+      font-family: var(--font-ink);
+      font-size: 1rem;
+      line-height: 1.5;
+      cursor: default;
+    }
+
+    .sticky-task-item input[type="checkbox"] {
+      margin-top: 5px;
+      cursor: pointer;
+      accent-color: var(--accent);
+      flex-shrink: 0;
+    }
+
+    .sticky-task-item .task-text {
+      flex: 1;
+      min-width: 0;
+      border: none;
+      background: transparent;
+      font-family: var(--font-ink);
+      font-size: 1rem;
+      line-height: 1.5;
+      color: var(--ink);
+      outline: none;
+      padding: 0;
+    }
+
+    .sticky-task-item.checked .task-text {
+      text-decoration: line-through;
+      color: var(--ink-muted);
+    }
+
+    .sticky-task-add {
+      display: block;
+      width: 100%;
+      border: none;
+      background: none;
+      font-family: var(--font-ink);
+      font-size: 0.9rem;
+      color: var(--ink-muted);
+      text-align: left;
+      cursor: pointer;
+      padding: 4px 0 0 22px;
+      transition: color 0.15s;
+    }
+    .sticky-task-add:hover { color: var(--ink-light); }
+
+    /* ============================================
+       Floating Action Button (sticky creator)
+       ============================================ */
+    .fab-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 50;
+      display: flex;
+      flex-direction: column-reverse;
+      align-items: flex-end;
+      gap: 8px;
+    }
+
+    .fab-btn {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s, background 0.2s;
+      line-height: 1;
+    }
+    .fab-btn:hover { background: var(--accent-hover); transform: scale(1.05); }
+    .fab-btn.open { transform: rotate(45deg); }
+    .fab-btn.open:hover { transform: rotate(45deg) scale(1.05); }
+
+    .fab-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+      transition: all 0.2s;
+    }
+    .fab-option.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: all;
+    }
+
+    .fab-option-btn {
+      height: 40px;
+      padding: 0 16px;
+      border-radius: 20px;
+      background: #fff;
+      color: var(--ink);
+      border: 1px solid var(--paper-line);
+      font-family: var(--font);
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: var(--shadow-md);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .fab-option-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+
+    .fab-option-btn .fab-color-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* ============================================
        Appointment modal
        ============================================ */
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.3);
+      background: rgba(0,0,0,0.35);
+      backdrop-filter: blur(2px);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -489,15 +766,15 @@
 
     .modal {
       background: #fff;
-      border-radius: 12px;
+      border-radius: 16px;
       padding: 28px;
       width: 400px;
       max-width: 90vw;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.15);
-      transform: translateY(8px);
+      box-shadow: var(--shadow-lg);
+      transform: translateY(8px) scale(0.98);
       transition: transform 0.2s;
     }
-    .modal-overlay.open .modal { transform: translateY(0); }
+    .modal-overlay.open .modal { transform: translateY(0) scale(1); }
 
     .modal h3 {
       font-family: var(--font-display);
@@ -524,14 +801,14 @@
       color: var(--ink);
       transition: all 0.15s;
     }
-    .modal-btn:hover { border-color: var(--accent); }
+    .modal-btn:hover { border-color: var(--accent); color: var(--accent); }
 
     .modal-btn-primary {
       background: var(--accent);
       color: #fff;
       border-color: var(--accent);
     }
-    .modal-btn-primary:hover { opacity: 0.9; }
+    .modal-btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); color: #fff; }
 
     .modal-btn-danger {
       color: var(--red);
@@ -555,7 +832,18 @@
       font-size: 0.8rem;
       font-weight: 600;
       cursor: pointer;
+      transition: background 0.15s;
     }
+    .sidebar-toggle:hover { background: var(--accent-hover); }
+
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.3);
+      z-index: 49;
+    }
+    .sidebar-overlay.open { display: block; }
 
     @media (max-width: 900px) {
       .sidebar {
@@ -568,10 +856,17 @@
       }
       .sidebar.open { transform: translateX(0); }
       .sidebar-toggle { display: block; }
+
+      .planner-scroll { padding: 12px; }
+
+      .fab-container { bottom: 16px; right: 16px; }
     }
   </style>
 </head>
 <body>
+
+  <!-- Sidebar overlay for mobile -->
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
   <!-- Sidebar -->
   <aside class="sidebar" id="sidebar">
@@ -600,10 +895,30 @@
       </div>
       <button class="toolbar-btn toolbar-today" id="today-btn">Today</button>
     </div>
-    <div class="planner-scroll">
-      <div class="planner" id="planner">
-        <!-- Generated by JS -->
+    <div class="planner-scroll" id="planner-scroll">
+      <div class="planner-wrap" id="planner-wrap">
+        <div class="planner" id="planner">
+          <!-- Generated by JS -->
+        </div>
+        <!-- Sticky notes rendered here as siblings of .planner inside .planner-wrap -->
       </div>
+    </div>
+  </div>
+
+  <!-- Floating Action Button for Stickies -->
+  <div class="fab-container" id="fab-container">
+    <button class="fab-btn" id="fab-toggle" title="Add sticky note">+</button>
+    <div class="fab-option" id="fab-note">
+      <button class="fab-option-btn" data-type="note">
+        <span class="fab-color-dot" style="background:var(--sticky-yellow-border)"></span>
+        Note
+      </button>
+    </div>
+    <div class="fab-option" id="fab-task">
+      <button class="fab-option-btn" data-type="task">
+        <span class="fab-color-dot" style="background:var(--sticky-green-border)"></span>
+        Task List
+      </button>
     </div>
   </div>
 
@@ -644,6 +959,7 @@
     // Data store (localStorage)
     // ============================================
     var STORE_KEY = 'sarnetsky-planner-crm';
+    var STICKY_KEY = 'sarnetsky-planner-stickies';
 
     function loadData() {
       try {
@@ -656,9 +972,20 @@
       localStorage.setItem(STORE_KEY, JSON.stringify(data));
     }
 
+    function loadStickies() {
+      try {
+        var raw = localStorage.getItem(STICKY_KEY);
+        return raw ? JSON.parse(raw) : {};
+      } catch (e) { return {}; }
+    }
+
+    function saveStickies() {
+      localStorage.setItem(STICKY_KEY, JSON.stringify(stickyData));
+    }
+
     var defaults = {
       clients: [
-        { id: 1, name: 'Example Client', email: 'hello@example.com', tier: 'power', notes: 'Met at a networking event. Runs a Shopify store doing ~$400K/yr. Interested in SEO automation.' },
+        { id: 1, name: 'Example Client', email: 'hello@example.com', tier: 'power', notes: 'Met at a networking event. Runs a Shopify store doing ~$400K/yr. Interested in SEO automation.' }
       ],
       appointments: [
         { id: 1, clientId: 1, title: 'Discovery Call', date: getTodayStr(), startHour: 10, endHour: 10.5, color: 'default' }
@@ -676,6 +1003,10 @@
     var data = loadData() || JSON.parse(JSON.stringify(defaults));
     if (!data.weekNotes) data.weekNotes = {};
 
+    // Sticky data: keyed by weekKey, each value is array of sticky objects
+    var stickyData = loadStickies();
+    var nextStickyId = Date.now();
+
     // ============================================
     // Week state
     // ============================================
@@ -684,7 +1015,7 @@
     function getWeekStart(date) {
       var d = new Date(date);
       var day = d.getDay();
-      var diff = d.getDate() - day + (day === 0 ? -6 : 1); // Monday
+      var diff = d.getDate() - day + (day === 0 ? -6 : 1);
       d.setDate(diff);
       d.setHours(0, 0, 0, 0);
       return d;
@@ -709,14 +1040,21 @@
       return days;
     }
 
+    function getWeekKey() {
+      return dateStr(currentWeekStart);
+    }
+
     var DAY_NAMES = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
     var START_HOUR = 6;
     var END_HOUR = 21;
+
+    var STICKY_COLORS = ['yellow', 'pink', 'blue', 'green'];
 
     // ============================================
     // Render planner grid
     // ============================================
     var plannerEl = document.getElementById('planner');
+    var plannerWrap = document.getElementById('planner-wrap');
     var weekLabel = document.getElementById('week-label');
     var todayStr = getTodayStr();
 
@@ -755,7 +1093,7 @@
       }
 
       // Focus / Intentions / To Do
-      var weekKey = dateStr(days[0]);
+      var weekKey = getWeekKey();
       var wn = data.weekNotes[weekKey] || { focus: '', intentions: '', todo: '' };
 
       html += '<div class="planner-sidebar-col">';
@@ -784,6 +1122,9 @@
           saveData();
         });
       });
+
+      // Render stickies for this week
+      renderStickies();
     }
 
     function renderAppointments(days) {
@@ -793,7 +1134,6 @@
         var dayIdx = dayStrs.indexOf(appt.date);
         if (dayIdx === -1) return;
 
-        // Find the slot
         var slots = plannerEl.querySelectorAll('.planner-slot[data-date="' + appt.date + '"]');
         var startSlot = null;
         slots.forEach(function (s) {
@@ -801,7 +1141,7 @@
         });
         if (!startSlot) return;
 
-        var duration = (appt.endHour - appt.startHour) * 2; // in half-hours
+        var duration = (appt.endHour - appt.startHour) * 2;
         var height = duration * 48;
 
         var el = document.createElement('div');
@@ -833,6 +1173,438 @@
     }
 
     // ============================================
+    // Sticky Notes System
+    // ============================================
+    function getWeekStickies() {
+      var key = getWeekKey();
+      if (!stickyData[key]) stickyData[key] = [];
+      return stickyData[key];
+    }
+
+    function createStickyData(type, x, y, color) {
+      return {
+        id: ++nextStickyId,
+        type: type, // 'note' or 'task'
+        color: color || (type === 'task' ? 'green' : 'yellow'),
+        x: x || 80,
+        y: y || 80,
+        width: type === 'task' ? 180 : 160,
+        height: type === 'task' ? 160 : 140,
+        rotation: (Math.random() * 4 - 2).toFixed(1),
+        text: '',
+        tasks: type === 'task' ? [{ text: '', checked: false }] : []
+      };
+    }
+
+    function addSticky(type, x, y, color) {
+      var sticky = createStickyData(type, x, y, color);
+      getWeekStickies().push(sticky);
+      saveStickies();
+      renderSingleSticky(sticky);
+      return sticky;
+    }
+
+    function removeSticky(id) {
+      var key = getWeekKey();
+      stickyData[key] = (stickyData[key] || []).filter(function (s) { return s.id !== id; });
+      saveStickies();
+      var el = document.querySelector('.sticky-note[data-id="' + id + '"]');
+      if (el) el.remove();
+    }
+
+    function updateStickyData(id, updates) {
+      var stickies = getWeekStickies();
+      var sticky = stickies.find(function (s) { return s.id === id; });
+      if (sticky) {
+        Object.assign(sticky, updates);
+        saveStickies();
+      }
+      return sticky;
+    }
+
+    function clearStickyElements() {
+      plannerWrap.querySelectorAll('.sticky-note').forEach(function (el) { el.remove(); });
+    }
+
+    function renderStickies() {
+      clearStickyElements();
+      var stickies = getWeekStickies();
+      stickies.forEach(function (sticky) {
+        renderSingleSticky(sticky);
+      });
+    }
+
+    function renderSingleSticky(sticky) {
+      var el = document.createElement('div');
+      el.className = 'sticky-note color-' + sticky.color + (sticky.type === 'task' ? ' sticky-task' : '');
+      el.dataset.id = sticky.id;
+      el.style.left = sticky.x + 'px';
+      el.style.top = sticky.y + 'px';
+      el.style.width = sticky.width + 'px';
+      el.style.height = sticky.height + 'px';
+      el.style.transform = 'rotate(' + sticky.rotation + 'deg)';
+
+      // Close button
+      var closeBtn = document.createElement('button');
+      closeBtn.className = 'sticky-close';
+      closeBtn.textContent = '\u00d7';
+      closeBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        removeSticky(sticky.id);
+      });
+      el.appendChild(closeBtn);
+
+      if (sticky.type === 'task') {
+        renderTaskContent(el, sticky);
+      } else {
+        var textarea = document.createElement('textarea');
+        textarea.className = 'sticky-body';
+        textarea.value = sticky.text || '';
+        textarea.placeholder = 'Type here...';
+        textarea.addEventListener('input', function () {
+          updateStickyData(sticky.id, { text: textarea.value });
+        });
+        textarea.addEventListener('mousedown', function (e) { e.stopPropagation(); });
+        textarea.addEventListener('touchstart', function (e) { e.stopPropagation(); });
+        el.appendChild(textarea);
+      }
+
+      // Color picker dots (shown on hover via a small row)
+      var colorRow = document.createElement('div');
+      colorRow.style.cssText = 'position:absolute;bottom:4px;left:8px;display:flex;gap:4px;opacity:0;transition:opacity 0.15s;';
+      STICKY_COLORS.forEach(function (c) {
+        var dot = document.createElement('div');
+        dot.style.cssText = 'width:10px;height:10px;border-radius:50%;cursor:pointer;border:1px solid rgba(0,0,0,0.15);';
+        dot.style.background = getComputedStyle(document.documentElement).getPropertyValue('--sticky-' + c + '-border');
+        dot.addEventListener('click', function (e) {
+          e.stopPropagation();
+          el.className = el.className.replace(/color-\w+/, 'color-' + c);
+          updateStickyData(sticky.id, { color: c });
+        });
+        dot.addEventListener('mousedown', function (e) { e.stopPropagation(); });
+        colorRow.appendChild(dot);
+      });
+      el.addEventListener('mouseenter', function () { colorRow.style.opacity = '1'; });
+      el.addEventListener('mouseleave', function () { colorRow.style.opacity = '0'; });
+      el.appendChild(colorRow);
+
+      // Resize handle
+      var resizeHandle = document.createElement('div');
+      resizeHandle.className = 'sticky-resize';
+      initResize(resizeHandle, el, sticky);
+      el.appendChild(resizeHandle);
+
+      // Drag
+      initDrag(el, sticky);
+
+      plannerWrap.appendChild(el);
+    }
+
+    function renderTaskContent(el, sticky) {
+      // Remove old task list if exists
+      var old = el.querySelector('.sticky-task-list');
+      if (old) old.remove();
+      var oldAdd = el.querySelector('.sticky-task-add');
+      if (oldAdd) oldAdd.remove();
+
+      var list = document.createElement('ul');
+      list.className = 'sticky-task-list';
+
+      if (!sticky.tasks || sticky.tasks.length === 0) {
+        sticky.tasks = [{ text: '', checked: false }];
+      }
+
+      sticky.tasks.forEach(function (task, idx) {
+        var li = document.createElement('li');
+        li.className = 'sticky-task-item' + (task.checked ? ' checked' : '');
+
+        var cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.checked = task.checked;
+        cb.addEventListener('change', function () {
+          task.checked = cb.checked;
+          li.className = 'sticky-task-item' + (task.checked ? ' checked' : '');
+          saveStickies();
+        });
+        cb.addEventListener('mousedown', function (e) { e.stopPropagation(); });
+        cb.addEventListener('touchstart', function (e) { e.stopPropagation(); });
+
+        var textInput = document.createElement('input');
+        textInput.type = 'text';
+        textInput.className = 'task-text';
+        textInput.value = task.text;
+        textInput.placeholder = 'Task...';
+        textInput.addEventListener('input', function () {
+          task.text = textInput.value;
+          saveStickies();
+        });
+        textInput.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            sticky.tasks.splice(idx + 1, 0, { text: '', checked: false });
+            saveStickies();
+            renderTaskContent(el, sticky);
+            // Focus new item
+            var items = el.querySelectorAll('.task-text');
+            if (items[idx + 1]) items[idx + 1].focus();
+          } else if (e.key === 'Backspace' && textInput.value === '' && sticky.tasks.length > 1) {
+            e.preventDefault();
+            sticky.tasks.splice(idx, 1);
+            saveStickies();
+            renderTaskContent(el, sticky);
+            var items2 = el.querySelectorAll('.task-text');
+            var focusIdx = Math.max(0, idx - 1);
+            if (items2[focusIdx]) items2[focusIdx].focus();
+          }
+        });
+        textInput.addEventListener('mousedown', function (e) { e.stopPropagation(); });
+        textInput.addEventListener('touchstart', function (e) { e.stopPropagation(); });
+
+        li.appendChild(cb);
+        li.appendChild(textInput);
+        list.appendChild(li);
+      });
+
+      // Insert after close button
+      var closeBtn = el.querySelector('.sticky-close');
+      if (closeBtn && closeBtn.nextSibling) {
+        el.insertBefore(list, closeBtn.nextSibling);
+      } else {
+        el.appendChild(list);
+      }
+
+      // Add task button
+      var addBtn = document.createElement('button');
+      addBtn.className = 'sticky-task-add';
+      addBtn.textContent = '+ Add task';
+      addBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        sticky.tasks.push({ text: '', checked: false });
+        saveStickies();
+        renderTaskContent(el, sticky);
+        var items = el.querySelectorAll('.task-text');
+        if (items.length) items[items.length - 1].focus();
+      });
+      addBtn.addEventListener('mousedown', function (e) { e.stopPropagation(); });
+      list.parentNode.insertBefore(addBtn, list.nextSibling);
+    }
+
+    // ============================================
+    // Drag system (mouse + touch)
+    // ============================================
+    function initDrag(el, sticky) {
+      var isDragging = false;
+      var startX, startY, origX, origY;
+      var longPressTimer = null;
+      var hasMoved = false;
+
+      function onStart(e) {
+        // Don't drag if clicking on interactive elements
+        var target = e.target;
+        if (target.tagName === 'TEXTAREA' || target.tagName === 'INPUT' || target.tagName === 'BUTTON' ||
+            target.classList.contains('sticky-resize') || target.classList.contains('sticky-close')) {
+          return;
+        }
+
+        hasMoved = false;
+
+        if (e.type === 'touchstart') {
+          // Long-press to drag on touch
+          var touch = e.touches[0];
+          startX = touch.clientX;
+          startY = touch.clientY;
+          origX = sticky.x;
+          origY = sticky.y;
+          longPressTimer = setTimeout(function () {
+            isDragging = true;
+            el.classList.add('dragging');
+          }, 300);
+        } else {
+          startX = e.clientX;
+          startY = e.clientY;
+          origX = sticky.x;
+          origY = sticky.y;
+          isDragging = true;
+          el.classList.add('dragging');
+          e.preventDefault();
+        }
+      }
+
+      function onMove(e) {
+        if (e.type === 'touchmove') {
+          var touch = e.touches[0];
+          var dx = touch.clientX - startX;
+          var dy = touch.clientY - startY;
+          if (Math.abs(dx) > 5 || Math.abs(dy) > 5) hasMoved = true;
+
+          if (!isDragging) {
+            if (hasMoved && longPressTimer) {
+              clearTimeout(longPressTimer);
+              longPressTimer = null;
+            }
+            return;
+          }
+          e.preventDefault();
+          sticky.x = Math.max(0, origX + dx);
+          sticky.y = Math.max(0, origY + dy);
+        } else {
+          if (!isDragging) return;
+          var dxm = e.clientX - startX;
+          var dym = e.clientY - startY;
+          sticky.x = Math.max(0, origX + dxm);
+          sticky.y = Math.max(0, origY + dym);
+        }
+        el.style.left = sticky.x + 'px';
+        el.style.top = sticky.y + 'px';
+      }
+
+      function onEnd() {
+        if (longPressTimer) {
+          clearTimeout(longPressTimer);
+          longPressTimer = null;
+        }
+        if (isDragging) {
+          isDragging = false;
+          el.classList.remove('dragging');
+          saveStickies();
+        }
+      }
+
+      el.addEventListener('mousedown', onStart);
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onEnd);
+
+      el.addEventListener('touchstart', onStart, { passive: false });
+      document.addEventListener('touchmove', onMove, { passive: false });
+      document.addEventListener('touchend', onEnd);
+    }
+
+    // ============================================
+    // Resize system
+    // ============================================
+    function initResize(handle, el, sticky) {
+      var isResizing = false;
+      var startX, startY, origW, origH;
+
+      function onStart(e) {
+        isResizing = true;
+        if (e.type === 'touchstart') {
+          var touch = e.touches[0];
+          startX = touch.clientX;
+          startY = touch.clientY;
+        } else {
+          startX = e.clientX;
+          startY = e.clientY;
+        }
+        origW = sticky.width;
+        origH = sticky.height;
+        e.stopPropagation();
+        e.preventDefault();
+      }
+
+      function onMove(e) {
+        if (!isResizing) return;
+        var cx, cy;
+        if (e.type === 'touchmove') {
+          var touch = e.touches[0];
+          cx = touch.clientX;
+          cy = touch.clientY;
+          e.preventDefault();
+        } else {
+          cx = e.clientX;
+          cy = e.clientY;
+        }
+        sticky.width = Math.max(100, origW + (cx - startX));
+        sticky.height = Math.max(80, origH + (cy - startY));
+        el.style.width = sticky.width + 'px';
+        el.style.height = sticky.height + 'px';
+      }
+
+      function onEnd() {
+        if (isResizing) {
+          isResizing = false;
+          saveStickies();
+        }
+      }
+
+      handle.addEventListener('mousedown', onStart);
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onEnd);
+
+      handle.addEventListener('touchstart', onStart, { passive: false });
+      document.addEventListener('touchmove', onMove, { passive: false });
+      document.addEventListener('touchend', onEnd);
+    }
+
+    // ============================================
+    // Double-click/tap on planner to create sticky
+    // ============================================
+    var lastTapTime = 0;
+    var plannerScroll = document.getElementById('planner-scroll');
+
+    plannerWrap.addEventListener('dblclick', function (e) {
+      // Only create on empty space (not on existing stickies or appointments)
+      if (e.target.closest('.sticky-note') || e.target.closest('.planner-entry')) return;
+
+      var rect = plannerWrap.getBoundingClientRect();
+      var x = e.clientX - rect.left + plannerScroll.scrollLeft;
+      var y = e.clientY - rect.top + plannerScroll.scrollTop;
+      addSticky('note', x - 60, y - 50);
+    });
+
+    // ============================================
+    // FAB (Floating Action Button)
+    // ============================================
+    var fabToggle = document.getElementById('fab-toggle');
+    var fabNote = document.getElementById('fab-note');
+    var fabTask = document.getElementById('fab-task');
+    var fabOpen = false;
+
+    fabToggle.addEventListener('click', function () {
+      fabOpen = !fabOpen;
+      fabToggle.classList.toggle('open', fabOpen);
+      fabNote.classList.toggle('visible', fabOpen);
+      fabTask.classList.toggle('visible', fabOpen);
+    });
+
+    function closeFab() {
+      fabOpen = false;
+      fabToggle.classList.remove('open');
+      fabNote.classList.remove('visible');
+      fabTask.classList.remove('visible');
+    }
+
+    fabNote.querySelector('.fab-option-btn').addEventListener('click', function () {
+      // Place sticky at a nice default position relative to current scroll
+      var scrollX = plannerScroll.scrollLeft;
+      var scrollY = plannerScroll.scrollTop;
+      var vw = plannerScroll.clientWidth;
+      var vh = plannerScroll.clientHeight;
+      var x = scrollX + vw / 2 - 80 + (Math.random() * 40 - 20);
+      var y = scrollY + vh / 2 - 70 + (Math.random() * 40 - 20);
+      addSticky('note', x, y, 'yellow');
+      closeFab();
+    });
+
+    fabTask.querySelector('.fab-option-btn').addEventListener('click', function () {
+      var scrollX = plannerScroll.scrollLeft;
+      var scrollY = plannerScroll.scrollTop;
+      var vw = plannerScroll.clientWidth;
+      var vh = plannerScroll.clientHeight;
+      var x = scrollX + vw / 2 - 90 + (Math.random() * 40 - 20);
+      var y = scrollY + vh / 2 - 80 + (Math.random() * 40 - 20);
+      addSticky('task', x, y, 'green');
+      closeFab();
+    });
+
+    // Close FAB when clicking elsewhere
+    document.addEventListener('click', function (e) {
+      if (fabOpen && !e.target.closest('.fab-container')) {
+        closeFab();
+      }
+    });
+
+    // ============================================
     // Week navigation
     // ============================================
     document.getElementById('prev-week').addEventListener('click', function () {
@@ -849,7 +1621,7 @@
     });
 
     // ============================================
-    // Modal
+    // Appointment Modal
     // ============================================
     var modalOverlay = document.getElementById('modal-overlay');
     var modalTitle = document.getElementById('modal-title');
@@ -862,7 +1634,6 @@
     var editingAppt = null;
     var modalDate = null;
 
-    // Populate time selects
     function populateTimeSelects() {
       var html = '';
       for (var h = START_HOUR; h <= END_HOUR; h++) {
@@ -908,7 +1679,7 @@
       }
 
       modalOverlay.classList.add('open');
-      modalInputTitle.focus();
+      setTimeout(function () { modalInputTitle.focus(); }, 100);
     }
 
     function closeModal() {
@@ -954,6 +1725,14 @@
         saveData();
         closeModal();
         renderPlanner();
+      }
+    });
+
+    // Keyboard: Escape to close modal
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        if (modalOverlay.classList.contains('open')) closeModal();
+        if (fabOpen) closeFab();
       }
     });
 
@@ -1089,7 +1868,6 @@
 
       sidebarBody.innerHTML = html;
 
-      // Bind changes
       document.getElementById('client-email').addEventListener('input', function () {
         client.email = this.value;
         saveData();
@@ -1106,8 +1884,16 @@
 
     // Mobile sidebar toggle
     var sidebarEl = document.getElementById('sidebar');
+    var sidebarOverlay = document.getElementById('sidebar-overlay');
+
     document.getElementById('sidebar-toggle').addEventListener('click', function () {
       sidebarEl.classList.toggle('open');
+      sidebarOverlay.classList.toggle('open');
+    });
+
+    sidebarOverlay.addEventListener('click', function () {
+      sidebarEl.classList.remove('open');
+      sidebarOverlay.classList.remove('open');
     });
 
     // ============================================
